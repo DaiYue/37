@@ -7,6 +7,9 @@
   },
   "dependencies": {
     "express.io": "*",
-    "ejs": "*"
+    "ejs": "*",
+    "passport": "*",
+    "passport-google-oauth": "*",
+    "mongojs": "*"
   }
 }
