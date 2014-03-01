@@ -13,7 +13,7 @@ exports.add = function (email, callback) {
 exports.login = function (user, callback) {
   db.user.findOne({ _id: user.email }, function (err, u) {
     if (err) return callback(err);
-    if (!u) callback(new Error('unauthorized'));
+    if (!u) return callback(new Error('unauthorized'));
     db.user.update(
       { _id: user.email },
       { $set: user },

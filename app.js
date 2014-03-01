@@ -4,6 +4,7 @@ var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var config = require('./config.json');
 var user = require('./models/user.js');
+var post = require('./models/post.js');
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -60,7 +61,7 @@ app.get('/auth',
   })
 );
 
-app.get('/callback', 
+app.get('/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   function (req, res) {
     res.redirect('/');
@@ -70,6 +71,33 @@ app.get('/callback',
 app.get('/logout', function (req, res) {
   req.logout();
   res.redirect('/');
+});
+
+app.io.route('post', function (req) {
+  if (!req.isAuthenticated()) {
+    req.io.emit('post:err', { err: new Error('unauthorized') });
+    return;
+  }
+  req.data.user = req.user;
+  req.data.timestamp = new Date().getTime();
+  post.add(req.data, function (err) {
+    if (err) {
+      req.io.emit('post:err', { err: err });
+    } else {
+      req.io.emit('post:ok');
+      req.io.broadcast('post', req.data);
+    }
+  });
+});
+
+app.io.route('get-post', function (req) {
+  post.get(req.data.max_id, req.data.limit, function (err, result) {
+    if (err) {
+      req.io.emit('get-post:err', { err: err });
+    } else {
+      req.io.emit('get-post', result);
+    }
+  });
 });
 
 app.get('/', function (req, res) {
