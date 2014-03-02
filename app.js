@@ -74,8 +74,7 @@ app.io.route('get-post', function (req) {
 });
 
 app.get('/', function (req, res) {
-  if (!req.user) console.log("not signed in");
-  else console.log(req.user);
+  onsole.log(req.user || "not signed in");
   req.session.user = req.user;
   res.render('index');
 });
