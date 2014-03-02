@@ -48,14 +48,14 @@ app.get('/logout', function (req, res) {
 
 app.io.route('post', function (req) {
   if (!req.session.user || !req.session.user.authorized) {
-    req.io.emit('post:err', { err: new Error('unauthorized') });
+    req.io.emit('post:err', { err: 'unauthorized' });
     return;
   }
   req.data.user = req.session.user;
   req.data.timestamp = new Date().getTime();
   post.add(req.data, function (err) {
     if (err) {
-      req.io.emit('post:err', { err: err });
+      req.io.emit('post:err', { err: err.message });
     } else {
       req.io.emit('post:ok');
       app.io.broadcast('post', req.data);
@@ -66,7 +66,7 @@ app.io.route('post', function (req) {
 app.io.route('get-post', function (req) {
   post.get(req.data.max_id, req.data.limit, function (err, result) {
     if (err) {
-      req.io.emit('get-post:err', { err: err });
+      req.io.emit('get-post:err', { err: err.message });
     } else {
       req.io.emit('get-post', result);
     }
