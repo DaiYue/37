@@ -1,35 +1,8 @@
 var express = require('express.io');
 var path = require('path');
-var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var config = require('./config.json');
+var passport = require('./passport');
 var user = require('./models/user.js');
 var post = require('./models/post.js');
-
-passport.serializeUser(function (user, done) {
-  done(null, user);
-});
-
-passport.deserializeUser(function (obj, done) {
-  done(null, obj);
-});
-
-passport.use(new GoogleStrategy({
-    clientID: config.clientID,
-    clientSecret: config.clientSecret,
-    callbackURL: config.callbackURL
-  },
-  function (accessToken, refreshToken, profile, done) {
-    process.nextTick(function () {
-      var u = profile._json;
-      user.login(u, function (err) {
-        if (err) console.log(err);
-        u.authorized = (err == null);
-        return done(null, u);
-      });
-    });
-  }
-));
 
 app = express().http().io();
 
@@ -74,7 +47,6 @@ app.get('/logout', function (req, res) {
 });
 
 app.io.route('post', function (req) {
-  console.log(req.session.user);
   if (!req.session.user || !req.session.user.authorized) {
     req.io.emit('post:err', { err: new Error('unauthorized') });
     return;
@@ -102,7 +74,8 @@ app.io.route('get-post', function (req) {
 });
 
 app.get('/', function (req, res) {
-  console.log(req.user);
+  if (!req.user) console.log("not signed in");
+  else console.log(req.user);
   req.session.user = req.user;
   res.render('index');
 });
