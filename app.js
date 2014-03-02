@@ -42,7 +42,7 @@ app.configure(function() {
   app.use(express.urlencoded());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.cookieSession({ 
+  app.use(express.session({ 
     secret: "top secret of girls' day 2014",
     cookie: { maxAge: 1000 * 3600 * 24 * 365 }
   }));
@@ -74,18 +74,19 @@ app.get('/logout', function (req, res) {
 });
 
 app.io.route('post', function (req) {
-  if (!req.isAuthenticated()) {
+  console.log(req.session.user);
+  if (!req.session.user || !req.session.user.authorized) {
     req.io.emit('post:err', { err: new Error('unauthorized') });
     return;
   }
-  req.data.user = req.user;
+  req.data.user = req.session.user;
   req.data.timestamp = new Date().getTime();
   post.add(req.data, function (err) {
     if (err) {
       req.io.emit('post:err', { err: err });
     } else {
       req.io.emit('post:ok');
-      req.io.broadcast('post', req.data);
+      app.io.broadcast('post', req.data);
     }
   });
 });
@@ -102,6 +103,7 @@ app.io.route('get-post', function (req) {
 
 app.get('/', function (req, res) {
   console.log(req.user);
+  req.session.user = req.user;
   res.render('index');
 });
 
