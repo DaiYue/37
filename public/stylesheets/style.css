@@ -1,8 +1,66 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+html {
+  position: relative;
+  min-height: 100%;
 }
 
-a {
-  color: #00B7FF;
+body {
+  /* padding top by navbar height */
+  padding-top: 70px;
+  /* margin bottom by footer height */
+  margin-bottom: 60px;
+}
+
+#new-post-panel textarea {
+  resize: vertical;
+  max-height: 100px;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+#footer .copyright {
+  margin: 20px 0;
+  color: #999999;
+  text-align: center;
+}
+
+/* workaround for pixel rounding bug in Masonry related to wrong `isBoxSizeOuter` 
+   under certain browser zooming settings */
+#post-panel {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.post-item, .post-item-sizer {
+  padding-left: 0;
+  padding-right: 0;
+}
+/* end of workaround */
+
+.post-item-sizer {
+  visibility: hidden;
+  clear: both;
+}
+
+@media (min-width: 1600px) {
+  .container {
+    width: 1540px;
+  }
+}
+
+@media print {
+  .post-item {
+    width: 100%!important;
+    position: relative!important;
+    top: auto!important;
+    bottom: auto!important;
+    left: auto!important;
+    right: auto!important;
+  }
 }

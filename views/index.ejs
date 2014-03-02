@@ -1,11 +1,52 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>girls' day</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="/javascripts/jquery-1.11.0.min.js"></script>
+    <script src="/javascripts/bootstrap.min.js"></script>
+    <script src="/javascripts/masonry.pkgd.min.js"></script>
+    <script src="/javascripts/mustache.min.js"></script>
+    <script src="/javascripts/index.js"></script>
   </head>
   <body>
-    <h1>girls' day</h1>
-    <p>Welcome to 411A</p>
+    <% include header %>
+    <div class="container">
+      <div class="row hidden-print">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+          <div id="new-post-panel">
+            <div class="form-group">
+              <label class="sr-only" for="message-input">New message</label>
+              <textarea type="text" class="form-control" id="message-input" placeholder="Write a message"></textarea>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-default" id="new-post-btn">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+          <div id="post-panel" class="row">
+            <div class="post-item-sizer col-xs-12 col-sm-6 col-lg-4"></div>
+            <div class="post-item col-xs-12 col-sm-6 col-lg-4" data-template-type="message">
+              <blockquote>
+                <header>
+                  <span>{{ user.name }} ({{ user.email }})</span>
+                  <time class="pull-right">{{ time }}</time>
+                </header>
+                <p>{{ content }}</p>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% include footer %>
   </body>
 </html>
