@@ -39,7 +39,8 @@
   function initializeNotificationPanel () {
     var panel = $('#notification-panel');
     notificationTemplates = {
-      error: loadTemplate(panel, 'error')
+      error: loadTemplate(panel, 'error'),
+      success: loadTemplate(panel, 'success')
     };
   }
 
@@ -56,11 +57,19 @@
 
   function initializeNewPostPanel () {
     $('#new-post-btn').click(function (event) {
-      var text = $('#message-input').val();
+      var box = $('#message-input');
+      var text = box.val().trim();
       if (text) {
         socket.emit('post', { type: 'message', content: text });
+        box.val('');
       }
-    })
+    });
+  }
+
+  function showNotification (message) {
+    var item = Mustache.render(notificationTemplates[message.type], message);
+    item = $(item);
+    $('#notification-panel').append(item);
   }
 
   function initializeSocket () {
@@ -73,11 +82,21 @@
     socket.on('post', function (data) {
       renderPost(data, 'prepend');
     });
+    socket.on('post:ok', function () {
+      showNotification({ type: 'success', title: '', content: 'post published' });
+    });
+    socket.on('post:err', function (data) {
+      if (data.err == 'unauthorized') {
+        showNotification({ type: 'error', title: 'Failed', content: 'unauthorized' });
+      } else {
+        showNotification({ type: 'error', title: 'Failed', content: 'unknown error' });
+      }
+    });
   }
 
   function initializeDynamicPostLoading () {
     $(window).scroll(function () {
-      var delta = $(window).scrollTop() + $(window).height() - $(document).height()
+      var delta = $(window).scrollTop() + $(window).height() - $(document).height();
       delta += $('#footer').height();
       if (delta >= 0) {
         var earliest = postPanel.find('.post-item:last-child');

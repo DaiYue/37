@@ -76,7 +76,7 @@ app.io.route('get-post', function (req) {
 app.get('/', function (req, res) {
   console.log(req.user || "not signed in");
   req.session.user = req.user;
-  res.render('index');
+  res.render('index', { user: req.user });
 });
 
 app.listen(3000);

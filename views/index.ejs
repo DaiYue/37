@@ -16,20 +16,40 @@
     <script src="/javascripts/index.js"></script>
   </head>
   <body>
-    <% include header %>
+    <header id="header" role="banner">
+      <div id="banner">
+        <div class="container">
+          <h1>Hi, girls</h1>
+        </div>
+      </div>
+    </header>
     <div class="container">
       <div class="row hidden-print">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
           <div id="notification-panel">
             <div class="alert alert-danger fade in" data-template-type="error">
               <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-              <p>{{ message }}</p>
+              {{# title }}<strong>{{ title }}</strong>{{/ title }}
+              <p>{{ content }}</p>
+            </div>
+            <div class="alert alert-success fade in" data-template-type="success">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              {{# title }}<strong>{{ title }}</strong>{{/ title }}
+              <p>{{ content }}</p>
             </div>
           </div>
         </div>
       </div>
       <div class="row hidden-print">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+<% if (!user) { %>
+          <div class="well well-lg"><a href="/auth">Sign in with Google</a></div>
+<% } else { %>
+          <div class="well">
+            <strong><%= user.name %></strong>
+            <span class="pull-right"><a href="/logout">Log out</a></span>
+          </div>
+<%   if (user.authorized) { %>
           <div id="new-post-panel">
             <div class="form-group">
               <label class="sr-only" for="message-input">New message</label>
@@ -39,6 +59,12 @@
               <button type="submit" class="btn btn-default" id="new-post-btn">Send</button>
             </div>
           </div>
+<%   } else { %>
+          <div class="well well-lg">
+            <p>Unauthorized</p>
+          </div>
+<%   }
+   } %>
         </div>
       </div>
       <div class="row">
@@ -58,6 +84,10 @@
         </div>
       </div>
     </div>
-    <% include footer %>
+    <footer id="footer">
+      <div class="container">
+        <p class="copyright">THSS10 &copy; 2014</p>
+      </div>
+    </footer>
   </body>
 </html>
