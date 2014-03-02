@@ -1,4 +1,15 @@
 (function () {
+  var postsPerPage = 10;
+  var socket;
+  var postPanel, postTemplates;
+  var notificationTemplates;
+
+  function formatDateTime (timestamp) {
+    var date = new Date(timestamp);
+    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+      + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+  }
+
   function loadTemplate (element, name) {
     if (!(element instanceof jQuery)) {
       element = $(element);
@@ -13,34 +24,82 @@
     return html;
   }
 
-  $(document).ready(function () {
-    var panel = $('#post-panel');
-    var templates = {
-      message: loadTemplate(panel, 'message')
+  function renderPost (post, method) {
+    post.time = formatDateTime(post.timestamp);
+    var item = Mustache.render(postTemplates[post.type], post);
+    item = $(item);
+    item.data('post-id', post._id);
+    if (method == 'append') {
+      postPanel.append(item).masonry('appended', item);
+    } else if (method == 'prepend') {
+      postPanel.prepend(item).masonry('prepended', item);
+    }
+  }
+
+  function initializeNotificationPanel () {
+    var panel = $('#notification-panel');
+    notificationTemplates = {
+      error: loadTemplate(panel, 'error')
     };
-    panel.masonry({
+  }
+
+  function initializePostPanel () {
+    postPanel = $('#post-panel');
+    postTemplates = {
+      message: loadTemplate(postPanel, 'message')
+    };
+    postPanel.masonry({
       itemSelector: '.post-item',
       columnWidth: '.post-item-sizer'
     });
+  }
 
-    var messages = [
-      '子曰：“学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？”',
-      '有子曰：“其为人也孝弟，而好犯上者，鲜矣；不好犯上，而好作乱者，未之有也。君子务本，本立而道生。孝弟也者，其为仁之本与！”',
-      '子曰：“巧言令色，鲜矣仁！”',
-      '曾子曰：“吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎？”',
-      '子曰：“道千乘之国，敬事而信，节用而爱人，使民以时。”',
-      '子曰：“弟子，入则孝，出则悌，谨而信，泛爱众，而亲仁。行有馀力，则以学文。”'
-    ];
-    for (var i = 0; i < messages.length; i++) {
-      var post = {
-        type: 'message',
-        content: messages[i],
-        user: { name: '路人甲', email: 'user@gmail.com' },
-        time: '2014-03-07 12:00'
-      };
-      var item = Mustache.render(templates[post.type], post);
-      item = $(item);
-      panel.append(item).masonry('appended', item);
-    }
+  function initializeNewPostPanel () {
+    $('#new-post-btn').click(function (event) {
+      var text = $('#message-input').val();
+      if (text) {
+        socket.emit('post', { type: 'message', content: text });
+      }
+    })
+  }
+
+  function initializeSocket () {
+    socket = io.connect('/');
+    socket.on('get-post', function (data) {
+      for (var i = 0; i < data.length; i++) {
+        renderPost(data[i], 'append');
+      }
+    });
+    socket.on('post', function (data) {
+      renderPost(data, 'prepend');
+    });
+  }
+
+  function initializeDynamicPostLoading () {
+    $(window).scroll(function () {
+      var delta = $(window).scrollTop() + $(window).height() - $(document).height()
+      delta += $('#footer').height();
+      if (delta >= 0) {
+        var earliest = postPanel.find('.post-item:last-child');
+        if (earliest.length > 0) {
+          var id = earliest.data('post-id');
+          getPosts(id, postsPerPage);
+        }
+      }
+    });
+  }
+
+  function getPosts (maxId, limit) {
+    socket.emit('get-post', { max_id: maxId, limit: limit });
+  }
+
+  $(document).ready(function () {
+    initializeNotificationPanel();
+    initializePostPanel();
+    initializeNewPostPanel();
+    initializeSocket();
+    initializeDynamicPostLoading();
+    getPosts(null, postsPerPage);
   });
+
 })();
