@@ -1,5 +1,6 @@
 var express = require('express.io');
 var path = require('path');
+var fs = require('fs');
 var passport = require('./passport');
 var user = require('./models/user.js');
 var post = require('./models/post.js');
@@ -47,6 +48,7 @@ app.get('/logout', function (req, res) {
 });
 
 app.io.route('post', function (req) {
+  if (!req.data) return;
   if (!req.session.user || !req.session.user.authorized) {
     req.io.emit('post:err', { err: 'unauthorized' });
     return;
@@ -58,12 +60,14 @@ app.io.route('post', function (req) {
       req.io.emit('post:err', { err: err.message });
     } else {
       req.io.emit('post:ok');
-      app.io.broadcast('post', req.data);
+      if (req.data.secret) req.io.emit('post', req.data);
+      else app.io.broadcast('post', req.data);
     }
   });
 });
 
 app.io.route('get-post', function (req) {
+  if (!req.data) return;
   post.get(req.data.max_id, req.data.limit, function (err, result) {
     if (err) {
       req.io.emit('get-post:err', { err: err.message });
@@ -76,7 +80,16 @@ app.io.route('get-post', function (req) {
 app.get('/', function (req, res) {
   console.log(req.user || "not signed in");
   req.session.user = req.user;
-  res.render('index', { user: req.user });
+  res.render('index', { user: req.session.user });
+});
+
+app.get('/invitation', function (req, res) {
+  if (!req.session.user) return res.send(403);
+  var filepath = './invitation/' + req.session.user.email + '.png';
+  fs.exists(filepath, function (exists) {
+    if (!exists) return res.send(403);
+    return res.sendfile(filepath);
+  });
 });
 
 app.listen(3000);

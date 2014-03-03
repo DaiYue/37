@@ -8,7 +8,7 @@ exports.add = function (post, callback) {
 
 exports.get = function (max_id, limit, callback) {
   if (max_id) {
-    db.post.find({ _id: { $lt: db.ObjectID(max_id) } })
+    db.post.find({ _id: { $lt: db.ObjectID(max_id), secret: { $ne: true } } })
            .limit(limit).sort({ _id: -1 }, callback);
   } else {
     db.post.find()
