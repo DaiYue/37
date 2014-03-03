@@ -92,4 +92,8 @@ app.get('/invitation', function (req, res) {
   });
 });
 
+app.use(function (err, req, res, next) {
+  res.redirect('/');
+});
+
 app.listen(config.port);
