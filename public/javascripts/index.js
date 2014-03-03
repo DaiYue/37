@@ -12,7 +12,7 @@
     var h = t.getHours();
     var m = t.getMinutes();
     var s = t.getSeconds();
-    return y + '/' + (o < 10 ? '0' + o : o) + '/' + d + ' ' +
+    return y + '/' + (o < 10 ? '0' + o : o) + '/' + (d < 10 ? '0' + d : d) + ' ' +
       (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
   }
 
