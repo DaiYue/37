@@ -18,7 +18,10 @@ exports.login = function (user, callback) {
       { _id: user.email },
       { $set: user },
       function (err) {
-        return callback(err);
+        if (err) return callback(err);
+        db.user.findOne({ _id: user.email }, function (err, u) {
+          callback(err, u);
+        });
       }
     );
   });

@@ -12,7 +12,7 @@ var strategy = new GoogleStrategy({
   function (accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
       var u = profile._json;
-      user.login(u, function (err) {
+      user.login(u, function (err, u) {
         if (err) console.log(err);
         u.authorized = (err == null);
         return done(null, u);
