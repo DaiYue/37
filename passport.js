@@ -11,11 +11,15 @@ var strategy = new GoogleStrategy({
   }, 
   function (accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-      var u = profile._json;
-      user.login(u, function (err, u) {
-        if (err) console.log(err);
-        u.authorized = (err == null);
-        return done(null, u);
+      user.login(profile._json, function (err, u) {
+        if (err || !u) {
+          console.log(err);
+          profile._json.authorized = false;
+          return done(null, profile._json);
+        } else {
+          u.authorized = true;
+          return done(null, u);  
+        }
       });
     });
   }

@@ -97,3 +97,7 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(config.port);
+
+process.on('uncaughtException', function (err) {
+  console.log(err);
+});
