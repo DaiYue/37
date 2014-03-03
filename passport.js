@@ -1,5 +1,6 @@
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var InternalOAuthError = require('passport-oauth').InternalOAuthError;
 var config = require('./config.json');
 var user = require('./models/user.js');
 var exec = require('child_process').exec;
