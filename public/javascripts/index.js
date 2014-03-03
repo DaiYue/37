@@ -128,7 +128,7 @@
       }
       var email = $(document.body).data('user-email');
       if (data.type == 'wish' && data.user && 
-        data.user.gender == 'male' && data.user.email == email) {
+        data.user.gender == 'female' && data.user.email == email) {
         showInvitation();
       }
     });
