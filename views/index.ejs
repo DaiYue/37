@@ -40,7 +40,7 @@
       <div class="row hidden-print">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
 <% if (!user) { %>
-          <div id="sign-in-panel" class="form-group"><a class="btn btn-lg btn-danger" href="/auth"><span class="glyphicon glyphicon-refresh icon-spin loading"></span> <span class="text">使用 Google 账号登录</span><span class="loading">正在登录...</span></a></div>
+          <div id="sign-in-panel" class="form-group"><a class="btn btn-lg btn-danger" href="/auth"><span class="glyphicon glyphicon-refresh icon-spin loading"></span> <span class="text">使用 Google 账号登录</span><span class="loading">正在登录……</span></a></div>
 <% } else { %>
           <div id="user-info-panel" class="clearfix">
             <strong><span class="glyphicon glyphicon-user"></span> <%= user.name %></strong> <span class="email">&lt;<%= user.email %>&gt;</span>
@@ -85,8 +85,10 @@
             </div>
           </div>
 <%   } else { %>
-          <div id="unauthorized-user-panel" class="well well-lg">
-            <p>你不是授权用户，不能发布内容哦～</p>
+          <div id="unauthorized-user-panel">
+            <div class="well well-lg">
+              <p>你不是授权用户，不能发布内容哦～</p>
+            </div>
           </div>
 <%   }
    } %>
@@ -112,7 +114,7 @@
                   </div>
                 </header>
                 <div class="content">
-                  {{ content }}
+                  <pre>{{ content }}</pre>
                 </div>
               </div>
             </div>
@@ -133,7 +135,7 @@
                   </div>
                 </header>
                 <div class="content">
-                  {{ content }}
+                  <pre>{{ content }}</pre>
                 </div>
               </div>
             </div>

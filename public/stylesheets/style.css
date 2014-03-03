@@ -255,6 +255,13 @@ body.default #footer .copyright, body.male #footer .copyright {
   padding: 10px;
 }
 
+.post-item-inner .content pre {
+  border: none;
+  padding: 5px 0;
+  background: transparent;
+  color: #111111;
+}
+
 .invitation-item .content {
   text-align: center;
 }
