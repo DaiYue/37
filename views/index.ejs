@@ -42,7 +42,7 @@
 <% if (!user) { %>
           <div id="sign-in-panel" class="form-group"><a class="btn btn-lg btn-danger" href="/auth"><span class="glyphicon glyphicon-refresh icon-spin loading"></span> <span class="text">使用 Google 账号登录</span><span class="loading">正在登录...</span></a></div>
 <% } else { %>
-          <div id="user-info-panel">
+          <div id="user-info-panel" class="clearfix">
             <strong><span class="glyphicon glyphicon-user"></span> <%= user.name %></strong> <span class="email">&lt;<%= user.email %>&gt;</span>
             <span class="pull-right"><a href="/logout" class="btn btn-default"><span class="glyphicon glyphicon-log-out"></span> 退出</a></span>
           </div>
