@@ -24,7 +24,7 @@ body {
   width: 100%;
 }
 
-#sign-in-panel, #user-info-panel, #new-post-panel {
+#sign-in-panel, #user-info-panel, #new-post-panel, #unauthorized-user-panel {
   padding: 5px;
 }
 
