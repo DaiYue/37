@@ -1,5 +1,5 @@
 {
-  "logger":"dev",
+  "dev": true,
   "port": 3000,
   "mongodb": "mongodb://localhost/37",
   "clientID": "468559003599-0ha2q3d4caugst818gtejd3ok8ffohpi.apps.googleusercontent.com",
