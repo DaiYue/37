@@ -76,12 +76,26 @@
         box.val('');
       }
     });
+    $('#new-wish-btn').click(function (event) {
+      var box = $('#wish-input');
+      var text = box.val().trim();
+      var secret = $('#secret-wish-checkbox').is(':checked');
+      if (text) {
+        socket.emit('post', { type: 'wish', content: text, secret: secret });
+        box.val('');
+      }
+    });
   }
 
   function showNotification (message) {
     var item = Mustache.render(notificationTemplates[message.type], message);
     item = $(item);
     $('#notification-panel').append(item);
+    window.setTimeout(function () {
+      item.fadeTo(500, 0).slideUp(500, function () {
+        $(this).remove();
+      });
+    }, 3000);
   }
 
   function initializeSocket () {

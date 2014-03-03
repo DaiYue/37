@@ -18,22 +18,17 @@
   <body>
     <header id="header" role="banner">
       <div id="banner">
-        <div class="container">
-          <h1>Hi, girls</h1>
-        </div>
       </div>
     </header>
     <div class="container">
       <div class="row hidden-print">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
           <div id="notification-panel">
-            <div class="alert alert-danger fade in" data-template-type="error">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <div class="alert alert-danger" data-template-type="error">
               {{# title }}<strong>{{ title }}</strong>{{/ title }}
               <p>{{ content }}</p>
             </div>
-            <div class="alert alert-success fade in" data-template-type="success">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <div class="alert alert-success" data-template-type="success">
               {{# title }}<strong>{{ title }}</strong>{{/ title }}
               <p>{{ content }}</p>
             </div>
@@ -73,7 +68,7 @@
                 <div class="form-group">
                   <div class="checkbox">
                     <label>
-                      <input id="public-wish-checkbox" type="checkbox" checked> Public
+                      <input id="secret-wish-checkbox" type="checkbox"> Keep it secret
                     </label>
                   </div>
                 </div>
@@ -103,7 +98,7 @@
                   </div>
                   <div class="post-info">
                     <div>
-                      <strong>{{ user.name }}</strong> <a href="mailto:{{ user.email }}" target="_blank">{{ user.email }}</a>
+                      <strong>{{ user.name }}</strong>
                     </div>
                     <div class="text-muted">
                       <time>{{ time }}</time>
