@@ -85,7 +85,7 @@ app.get('/', function (req, res) {
 
 app.get('/invitation', function (req, res) {
   if (!req.session.user) return res.send(403);
-  var filepath = './invitation/' + req.session.user.email + '.png';
+  var filepath = path.join(__dirname, 'invitation/' + req.session.user.email + '.png');
   fs.exists(filepath, function (exists) {
     if (!exists) return res.send(403);
     return res.sendfile(filepath);
