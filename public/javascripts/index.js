@@ -29,6 +29,8 @@
     var item = Mustache.render(postTemplates[post.type], post);
     item = $(item);
     item.data('post-id', post._id);
+    var avatar = item.find('.avatar img');
+    avatar.attr('src', avatar.data('src'));
     if (method == 'append') {
       postPanel.append(item).masonry('appended', item);
     } else if (method == 'prepend') {
@@ -44,6 +46,16 @@
     };
   }
 
+  function initializeSignInPanel () {
+    var link = $('#sign-in-panel a.btn');
+    link.click(function (event) {
+      link.bind('click', false);
+      link.find('span.loading').show();
+      link.find('span.loading.icon-spin').css('display', 'inline-block');
+      link.find('span.text').hide();
+    });
+  }
+
   function initializePostPanel () {
     postPanel = $('#post-panel');
     postTemplates = {
@@ -56,7 +68,7 @@
   }
 
   function initializeNewPostPanel () {
-    $('#new-post-btn').click(function (event) {
+    $('#new-message-btn').click(function (event) {
       var box = $('#message-input');
       var text = box.val().trim();
       if (text) {
@@ -114,6 +126,7 @@
 
   $(document).ready(function () {
     initializeNotificationPanel();
+    initializeSignInPanel();
     initializePostPanel();
     initializeNewPostPanel();
     initializeSocket();

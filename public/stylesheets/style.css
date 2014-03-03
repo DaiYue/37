@@ -35,6 +35,49 @@ body {
   text-align: center;
 }
 
+.icon-spin {
+  display: inline-block;
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+}
+
+@-moz-keyframes spin {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#sign-in-panel a.btn {
+  display: block;
+}
+
+#sign-in-panel span.loading {
+  display: none;
+}
+
 /* workaround for pixel rounding bug in Masonry related to wrong `isBoxSizeOuter` 
    under certain browser zooming settings */
 #post-panel {
@@ -51,6 +94,22 @@ body {
 .post-item-sizer {
   visibility: hidden;
   clear: both;
+}
+
+.post-item-inner {
+  border: 1px #cccccc solid;
+  margin: 5px;
+  padding: 5px;
+}
+
+.post-item-inner .avatar img {
+  margin: 0.25em 0.5em;
+  width: 2.5em;
+  height: 2.5em;
+}
+
+.post-item-inner .content {
+  padding: 10px;
 }
 
 @media (min-width: 1600px) {
