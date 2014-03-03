@@ -4,6 +4,7 @@ var fs = require('fs');
 var passport = require('./passport');
 var user = require('./models/user.js');
 var post = require('./models/post.js');
+var config = require('./config.json');
 
 app = express().http().io();
 
@@ -92,9 +93,4 @@ app.get('/invitation', function (req, res) {
   });
 });
 
-app.listen(3000);
-
-function ensureAuthenticated (req, res, next) {
-  if (req.isAuthenticated()) return next();
-  res.redirect('/');
-}
+app.listen(config.port);
