@@ -11,7 +11,7 @@ exports.get = function (max_id, limit, callback) {
     db.post.find({ _id: { $lt: db.ObjectID(max_id) }, secret: { $ne: true } })
            .limit(limit).sort({ _id: -1 }, callback);
   } else {
-    db.post.find()
+    db.post.find({ secret: { $ne: true } })
            .limit(limit).sort({ _id: -1 }, callback);
   }
 };
