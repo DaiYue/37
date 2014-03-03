@@ -1,6 +1,5 @@
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-var InternalOAuthError = require('passport-oauth').InternalOAuthError;
 var config = require('./config.json');
 var user = require('./models/user.js');
 var exec = require('child_process').exec;
@@ -26,7 +25,7 @@ strategy.userProfile = function(accessToken, done) {
   var url = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + accessToken;
   exec('curl ' + url, function (err, body) {
   // this._oauth2.get('https://www.googleapis.com/oauth2/v1/userinfo', accessToken, function (err, body, res) {
-    if (err) { return done(new InternalOAuthError('failed to fetch user profile', err)); }
+    if (err) { return done(new Error('failed to fetch user profile', err)); }
     
     try {
       var json = JSON.parse(body);
