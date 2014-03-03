@@ -5,9 +5,15 @@
   var notificationTemplates;
 
   function formatDateTime (timestamp) {
-    var date = new Date(timestamp);
-    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-      + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+    var t = new Date(timestamp);
+    var y = t.getFullYear();
+    var o = t.getMonth() + 1;
+    var d = t.getDate();
+    var h = t.getHours();
+    var m = t.getMinutes();
+    var s = t.getSeconds();
+    return y + '/' + (o < 10 ? '0' + o : o) + '/' + d + ' ' +
+      (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
   }
 
   function loadTemplate (element, name) {
