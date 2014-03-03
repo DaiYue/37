@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>girls' day</title>
+    <title>Girls' Day</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
     <link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css">
@@ -40,45 +40,45 @@
       <div class="row hidden-print">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
 <% if (!user) { %>
-          <div id="sign-in-panel" class="form-group"><a class="btn btn-lg btn-danger" href="/auth"><span class="glyphicon glyphicon-refresh icon-spin loading"></span> <span class="text">Sign in with Google</span><span class="loading">Signing in...</span></a></div>
+          <div id="sign-in-panel" class="form-group"><a class="btn btn-lg btn-danger" href="/auth"><span class="glyphicon glyphicon-refresh icon-spin loading"></span> <span class="text">使用 Google 账号登录</span><span class="loading">正在登录...</span></a></div>
 <% } else { %>
           <div id="user-info-panel">
             <strong><span class="glyphicon glyphicon-user"></span> <%= user.name %></strong> <span class="email">&lt;<%= user.email %>&gt;</span>
-            <span class="pull-right"><a href="/logout" class="btn btn-default"><span class="glyphicon glyphicon-log-out"></span> Log out</a></span>
+            <span class="pull-right"><a href="/logout" class="btn btn-default"><span class="glyphicon glyphicon-log-out"></span> 退出</a></span>
           </div>
 <%   if (user.authorized) { %>
           <div id="new-post-panel">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#new-message" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Message</a></li>
+              <li class="active"><a href="#new-message" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> 消息</a></li>
 <%     if (user.gender == 'female') { %>
-              <li><a href="#new-wish" data-toggle="tab"><span class="glyphicon glyphicon-heart"></span> Wish</a></li>
+              <li><a href="#new-wish" data-toggle="tab"><span class="glyphicon glyphicon-heart"></span> 心愿</a></li>
 <%     } %>
             </ul>
             <div class="tab-content">
               <div id="new-message" class="tab-pane active">
                 <div class="form-group">
-                  <label class="sr-only" for="message-input">New message</label>
-                  <textarea type="text" class="form-control" id="message-input" placeholder="Write a message"></textarea>
+                  <label class="sr-only" for="message-input">写消息</label>
+                  <textarea type="text" class="form-control" id="message-input" placeholder="写消息"></textarea>
                 </div>
                 <div class="form-group">
-                  <button type="submit" class="btn btn-default" id="new-message-btn"><span class="glyphicon glyphicon-envelope"></span> Send</button>
+                  <button type="submit" class="btn btn-default" id="new-message-btn"><span class="glyphicon glyphicon-envelope"></span> 发送</button>
                 </div>
               </div>
 <%     if (user.gender == 'female') { %>
               <div id="new-wish" class="tab-pane">
                 <div class="form-group">
-                  <label class="sr-only" for="wish-input">New wish</label>
-                  <textarea type="text" class="form-control" id="wish-input" placeholder="Write a wish"></textarea>
+                  <label class="sr-only" for="wish-input">写愿望</label>
+                  <textarea type="text" class="form-control" id="wish-input" placeholder="快写下你的女生节愿望吧～"></textarea>
                 </div>
                 <div class="form-group">
                   <div class="checkbox">
                     <label>
-                      <input id="secret-wish-checkbox" type="checkbox"> Keep it secret
+                      <input id="secret-wish-checkbox" type="checkbox"> 只有我能看见
                     </label>
                   </div>
                 </div>
                 <div class="form-group">
-                  <button type="submit" class="btn btn-default" id="new-wish-btn"><span class="glyphicon glyphicon-send"></span> Send</button>
+                  <button type="submit" class="btn btn-default" id="new-wish-btn"><span class="glyphicon glyphicon-send"></span> 许愿</button>
                 </div>
               </div>
 <%     } %>
@@ -86,7 +86,7 @@
           </div>
 <%   } else { %>
           <div class="well well-lg">
-            <p>Unauthorized</p>
+            <p>你不是授权用户，不能发布内容哦～</p>
           </div>
 <%   }
    } %>
@@ -151,6 +151,8 @@
     <footer id="footer">
       <div class="container">
         <p class="copyright">THSS10 &copy; 2014</p>
+        <p class="copyright">使用 <a href="http://express-io.org" target="_blank">Express.io</a> 和 <a href="http://getbootstrap.com" target="_blank">Bootstrap</a> 构建&nbsp;&nbsp;|&nbsp;&nbsp;素材来自 <a href="http://www.a-li.com.cn" target="_blank">阿狸</a>
+        </p>
       </div>
     </footer>
   </body>

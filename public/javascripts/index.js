@@ -127,13 +127,13 @@
       }
     });
     socket.on('post:ok', function () {
-      showNotification({ type: 'success', title: '', content: 'post published' });
+      showNotification({ type: 'success', title: '', content: '发送成功！' });
     });
     socket.on('post:err', function (data) {
       if (data.err == 'unauthorized') {
-        showNotification({ type: 'error', title: 'Failed', content: 'unauthorized' });
+        showNotification({ type: 'error', title: '发送失败', content: '您没有发布消息的权限！' });
       } else {
-        showNotification({ type: 'error', title: 'Failed', content: 'unknown error' });
+        showNotification({ type: 'error', title: '发送失败', content: '未知错误。' });
       }
     });
   }
