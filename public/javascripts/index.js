@@ -38,6 +38,15 @@
     }
   }
 
+  function showInvitation () {
+    var item = Mustache.render(postTemplates['invitation'], {});
+    item = $(item);
+    postPanel.prepend(item);
+    item.imagesLoaded(function () {
+      postPanel.masonry('prepended', item);
+    });
+  }
+
   function initializeNotificationPanel () {
     var panel = $('#notification-panel');
     notificationTemplates = {
@@ -59,7 +68,9 @@
   function initializePostPanel () {
     postPanel = $('#post-panel');
     postTemplates = {
-      message: loadTemplate(postPanel, 'message')
+      message: loadTemplate(postPanel, 'message'),
+      wish: loadTemplate(postPanel, 'wish'),
+      invitation: loadTemplate(postPanel, 'invitation')
     };
     postPanel.masonry({
       itemSelector: '.post-item',
@@ -106,7 +117,14 @@
       }
     });
     socket.on('post', function (data) {
-      renderPost(data, 'prepend');
+      if (!data.secret) {
+        renderPost(data, 'prepend');
+      }
+      var email = $(document.body).data('user-email');
+      if (data.type == 'wish' && data.user && 
+        data.user.gender == 'male' && data.user.email == email) {
+        showInvitation();
+      }
     });
     socket.on('post:ok', function () {
       showNotification({ type: 'success', title: '', content: 'post published' });

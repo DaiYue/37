@@ -6,26 +6,112 @@ html {
 body {
   /* margin bottom by footer height */
   margin-bottom: 60px;
-  background-image: none;
-  background-color: #dddddd;
 }
 
 #banner {
-  background-image: none;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100%;
+  border-bottom: none;
+  border-bottom: 2em solid rgba(255, 255, 255, .2);
+  -webkit-background-clip: padding-box; /* for Safari */
+  background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
 }
 
 #banner {
   margin-bottom: 20px;
-  height: 200px;
   background-color: transparent;
 }
 
-#new-post-panel {
-  background-color: white;
+#banner img {
+  width: 100%;
+}
+
+#sign-in-panel, #user-info-panel, #new-post-panel {
   padding: 5px;
+}
+
+#user-info-panel a.btn {
+  color: #333333;
+}
+
+body.default {
+  background-image: url('../images/bg-default.png');
+}
+
+body.default #user-info-panel strong {
+  color: rgba(255, 255, 255);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+body.default a {
+  color: #f30021;
+}
+
+body.default a:hover, body.default a:focus {
+  color: #f93e58;
+}
+
+body.default a.btn-danger {
+  color: white;
+}
+
+body.default #user-info-panel .email {
+  color: #f30021;
+}
+
+body.default #new-post-panel .checkbox label {
+  color: rgba(255, 255, 255);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.female {
+  background-image: url('../images/bg-female.png');
+}
+
+body.female #user-info-panel strong {
+  color: rgba(255, 255, 255);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+body.female a {
+  color: #75123b;
+}
+
+body.female a:hover, body.female a:focus {
+  color: #ba4475;
+}
+
+body.female #user-info-panel .email {
+  color: #75123b;
+}
+
+body.female #new-post-panel .checkbox label {
+  color: rgba(255, 255, 255);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+body.male {
+  background-image: url('../images/bg-male.png');
+}
+
+body.male #user-info-panel strong {
+  color: rgba(255, 255, 255);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+body.male a {
+  color: #428bca;
+}
+
+body.male a:hover, body.male a:focus {
+  color: #2a6496;
+}
+
+body.male #user-info-panel .email {
+  color: #428bca;
+}
+
+body.male #new-post-panel .checkbox label {
+  color: rgba(255, 255, 255);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 #new-post-panel ul.nav-tabs {
@@ -36,15 +122,30 @@ body {
 #new-post-panel ul.nav-tabs > li > a {
   border: none;
   border-radius: 4px;
+  padding: 6px 8px;
+  margin-right: 4px;
 }
 
 #new-post-panel ul.nav-tabs > li.active > a {
-  background-color: #dddddd;
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+#new-post-panel ul.nav-tabs > li > a:hover, 
+#new-post-panel ul.nav-tabs > li > a:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+#new-post-panel button, #user-info-panel a.btn {
+  padding: 5px 10px;
 }
 
 #new-post-panel textarea {
   resize: vertical;
   max-height: 100px;
+}
+
+#new-post-panel .form-group {
+  margin-bottom: 6px;
 }
 
 #post-panel {
@@ -57,13 +158,18 @@ body {
   width: 100%;
   /* set the fixed height of the footer here */
   height: 60px;
-  background-color: #f5f5f5;
 }
 
 #footer .copyright {
   margin: 20px 0;
-  color: #999999;
+  color: rgba(255, 255, 255);
+  color: rgba(255, 255, 255, 0.6);
   text-align: center;
+}
+
+body.default #footer .copyright, body.male #footer .copyright {
+  color: rgba(255, 255, 255);
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .icon-spin {
@@ -131,6 +237,7 @@ body {
   background-color: white;
   margin: 5px;
   padding: 5px;
+  border-radius: 8px;
 }
 
 .post-item-inner .avatar img {
@@ -139,8 +246,22 @@ body {
   height: 2.5em;
 }
 
+.post-item-inner .wish-bg span {
+  font-size: 36px;
+  color: #f53d68;
+}
+
 .post-item-inner .content {
   padding: 10px;
+}
+
+.invitation-item .content {
+  text-align: center;
+}
+
+.invitation-item img.invitation {
+  max-width: 100%;
+  display: inline-block;
 }
 
 @media (min-width: 1600px) {

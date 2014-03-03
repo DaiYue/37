@@ -12,12 +12,14 @@
     <script src="/javascripts/bootstrap.min.js"></script>
     <script src="/javascripts/masonry.pkgd.min.js"></script>
     <script src="/javascripts/mustache.min.js"></script>
+    <script src="/javascripts/imagesloaded.pkgd.min.js"></script>
     <script src="/javascripts/socket.io.min.js"></script>
     <script src="/javascripts/index.js"></script>
   </head>
-  <body>
+  <body class="<%= user ? user.gender : 'default' %>" data-user-email="<%= user ? user.email : '' %>">
     <header id="header" role="banner">
       <div id="banner">
+        <img src="/images/banner-<%= user ? user.gender : 'default' %>.png" alt="">
       </div>
     </header>
     <div class="container">
@@ -36,19 +38,21 @@
         </div>
       </div>
       <div class="row hidden-print">
-        <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1">
 <% if (!user) { %>
-          <div id="sign-in-panel" class="form-group"><a class="btn btn-lg btn-primary" href="/auth"><span class="glyphicon glyphicon-refresh icon-spin loading"></span> <span class="text">Sign in with Google</span><span class="loading">Signing in...</span></a></div>
+          <div id="sign-in-panel" class="form-group"><a class="btn btn-lg btn-danger" href="/auth"><span class="glyphicon glyphicon-refresh icon-spin loading"></span> <span class="text">Sign in with Google</span><span class="loading">Signing in...</span></a></div>
 <% } else { %>
-          <div id="user-info-panel" class="well clearfix">
-            <strong><span class="glyphicon glyphicon-user"></span> <%= user.name %></strong> <span class="text-muted"><%= user.email %></span>
-            <span class="pull-right"><a href="/logout">Log out</a></span>
+          <div id="user-info-panel">
+            <strong><span class="glyphicon glyphicon-user"></span> <%= user.name %></strong> <span class="email">&lt;<%= user.email %>&gt;</span>
+            <span class="pull-right"><a href="/logout" class="btn btn-default"><span class="glyphicon glyphicon-log-out"></span> Log out</a></span>
           </div>
 <%   if (user.authorized) { %>
           <div id="new-post-panel">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#new-message" data-toggle="tab"><span class="glyphicon glyphicon-pencil"></span> Message</a></li>
+<%     if (user.gender == 'female') { %>
               <li><a href="#new-wish" data-toggle="tab"><span class="glyphicon glyphicon-heart"></span> Wish</a></li>
+<%     } %>
             </ul>
             <div class="tab-content">
               <div id="new-message" class="tab-pane active">
@@ -60,6 +64,7 @@
                   <button type="submit" class="btn btn-default" id="new-message-btn"><span class="glyphicon glyphicon-envelope"></span> Send</button>
                 </div>
               </div>
+<%     if (user.gender == 'female') { %>
               <div id="new-wish" class="tab-pane">
                 <div class="form-group">
                   <label class="sr-only" for="wish-input">New wish</label>
@@ -76,6 +81,7 @@
                   <button type="submit" class="btn btn-default" id="new-wish-btn"><span class="glyphicon glyphicon-send"></span> Send</button>
                 </div>
               </div>
+<%     } %>
             </div>
           </div>
 <%   } else { %>
@@ -107,6 +113,34 @@
                 </header>
                 <div class="content">
                   {{ content }}
+                </div>
+              </div>
+            </div>
+            <div class="post-item col-xs-12 col-sm-6" data-template-type="wish">
+              <div class="post-item-inner {{ user.gender }}">
+                <header class="clearfix">
+                  <div class="avatar pull-left">
+                    <img class="img-circle" data-src="{{ user.picture }}" alt="{{ user.name }}">
+                  </div>
+                  <div class="wish-bg pull-right"><span class="glyphicon glyphicon-heart"></span></div>
+                  <div class="post-info">
+                    <div>
+                      <strong>{{ user.name }}</strong>
+                    </div>
+                    <div class="text-muted">
+                      <time>{{ time }}</time>
+                    </div>
+                  </div>
+                </header>
+                <div class="content">
+                  {{ content }}
+                </div>
+              </div>
+            </div>
+            <div class="post-item invitation-item col-xs-12" data-template-type="invitation">
+              <div class="post-item-inner">
+                <div class="content">
+                  <img class="invitation" src="/invitation" alt="">
                 </div>
               </div>
             </div>
