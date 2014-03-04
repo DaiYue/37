@@ -260,6 +260,13 @@ body.default #footer .copyright, body.male #footer .copyright {
   padding: 5px 0;
   background: transparent;
   color: #111111;
+  -ms-word-break: normal;
+  word-break: normal;
+  white-space: pre-wrap; /* CSS3 */
+  white-space: -moz-pre-wrap; /* Mozilla, post millennium */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
 .invitation-item .content {
