@@ -1,12 +1,17 @@
 var db = require('./db.js');
 
-exports.add = function (email, callback) {
-  db.user.findOne({ _id: email }, function (err, u) {
+exports.add = function (user, callback) {
+  db.user.findOne({ _id: user.email }, function (err, u) {
     if (err) return callback(err);
-    if (u) return callback(null);
-    db.user.insert({ _id: email }, function (err) {
-      return callback(err);
-    });
+    if (u) {
+      db.user.update(
+        { _id: user.email },
+        { $set: user },
+        callback
+      );
+    } else {
+      db.user.insert(user, callback);
+    }
   });
 };
 
