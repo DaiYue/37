@@ -90,7 +90,7 @@
   function initializeNewPostPanel () {
     $('#new-message-btn').click(function (event) {
       var box = $('#message-input');
-      var text = box.val().trim();
+      var text = $.trim(box.val());
       if (text) {
         socket.emit('post', { type: 'message', content: text });
         box.val('');
@@ -98,7 +98,7 @@
     });
     $('#new-wish-btn').click(function (event) {
       var box = $('#wish-input');
-      var text = box.val().trim();
+      var text = $.trim(box.val());
       var secret = $('#secret-wish-checkbox').is(':checked');
       if (text) {
         socket.emit('post', { type: 'wish', content: text, secret: secret });
