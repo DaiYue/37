@@ -10,6 +10,7 @@ exports.add = function (user, callback) {
         callback
       );
     } else {
+      user._id = user.email;
       db.user.insert(user, callback);
     }
   });
