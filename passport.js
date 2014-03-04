@@ -11,6 +11,10 @@ var strategy = new GoogleStrategy({
   }, 
   function (accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
+      if (!profile || !profile._json) {
+        console.log(profile);
+        return done(new Error('profile error'), profile);
+      }
       user.login(profile._json, function (err, u) {
         if (err || !u) {
           console.log(err);
