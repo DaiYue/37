@@ -148,8 +148,13 @@ body.male #new-post-panel .checkbox label {
   margin-bottom: 6px;
 }
 
-#post-panel {
+#post-panel, #post-loading-panel {
   margin-bottom: 20px;
+}
+
+#post-loading-panel {
+  text-align: center;
+  color: white;
 }
 
 #footer {

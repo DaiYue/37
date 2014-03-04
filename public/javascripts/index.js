@@ -3,6 +3,8 @@
   var socket;
   var postPanel, postTemplates;
   var notificationTemplates;
+  var hasMorePosts = true;
+  var isLoadingPosts = false;
 
   function formatDateTime (timestamp) {
     var t = new Date(timestamp);
@@ -47,6 +49,7 @@
   function showInvitation () {
     var item = Mustache.render(postTemplates['invitation'], {});
     item = $(item);
+    item.find('img.invitation').attr('src', '/invitation');
     postPanel.prepend(item);
     item.imagesLoaded(function () {
       postPanel.masonry('prepended', item);
@@ -118,9 +121,7 @@
   function initializeSocket () {
     socket = io.connect('/');
     socket.on('get-post', function (data) {
-      for (var i = 0; i < data.length; i++) {
-        renderPost(data[i], 'append');
-      }
+      receivePosts(data);
     });
     socket.on('post', function (data) {
       if (!data.secret) {
@@ -137,15 +138,21 @@
     });
     socket.on('post:err', function (data) {
       if (data.err == 'unauthorized') {
-        showNotification({ type: 'error', title: '发送失败', content: '您没有发布消息的权限！' });
+        showNotification({ type: 'error', title: '发送失败', content: '您没有发布内容的权限！' });
       } else {
         showNotification({ type: 'error', title: '发送失败', content: '未知错误。' });
       }
+    });
+    socket.on('get-post:err', function (data) {
+      showNotification({ type: 'error', title: '获取内容失败', content: '未知错误。' });
     });
   }
 
   function initializeDynamicPostLoading () {
     $(window).scroll(function () {
+      if (isLoadingPosts || !hasMorePosts) {
+        return;
+      }
       var delta = $(window).scrollTop() + $(window).height() - $(document).height();
       delta += $('#footer').height();
       if (delta >= 0) {
@@ -160,6 +167,19 @@
 
   function getPosts (maxId, limit) {
     socket.emit('get-post', { max_id: maxId, limit: limit });
+    isLoadingPosts = true;
+    $('#post-loading-panel').removeClass('hidden');
+  }
+
+  function receivePosts (data) {
+    if (data.length == 0) {
+      hasMorePosts = false;
+    }
+    for (var i = 0; i < data.length; i++) {
+      renderPost(data[i], 'append');
+    }
+    isLoadingPosts = false;
+    $('#post-loading-panel').addClass('hidden');
   }
 
   $(document).ready(function () {
