@@ -11,6 +11,7 @@
     "passport": "*",
     "passport-google-oauth": "*",
     "mongodb": "*",
-    "mongojs": "*"
+    "mongojs": "*",
+    "connect-mongo": "*"
   }
 }

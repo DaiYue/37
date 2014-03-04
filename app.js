@@ -5,6 +5,7 @@ var passport = require('./passport');
 var user = require('./models/user.js');
 var post = require('./models/post.js');
 var config = require('./config.json');
+var MongoStore = require('connect-mongo')(express);
 
 app = express().http().io();
 
@@ -19,7 +20,10 @@ app.configure(function() {
   app.use(express.cookieParser());
   app.use(express.session({
     secret: config.secret,
-    cookie: { maxAge: 1000 * 3600 * 24 * 365 }
+    cookie: { maxAge: 1000 * 3600 * 24 * 365 },
+    store: new MongoStore({
+        url: config.mongodb
+    }),
   }));
   app.use(passport.initialize());
   app.use(passport.session());
