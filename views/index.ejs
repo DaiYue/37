@@ -16,10 +16,10 @@
     <script src="/javascripts/socket.io.min.js"></script>
     <script src="/javascripts/index.js"></script>
   </head>
-  <body class="<%= user ? user.gender : 'default' %>" data-user-email="<%= user ? user.email : '' %>">
+  <body class="<%= user ? (user.gender || 'default') : 'default' %>" data-user-email="<%= user ? user.email : '' %>">
     <header id="header" role="banner">
       <div id="banner">
-        <img src="/images/banner-<%= user ? user.gender : 'default' %>.png" alt="">
+        <img src="/images/banner-<%= user ? (user.gender || 'default') : 'default' %>.png" alt="">
       </div>
     </header>
     <div class="container">
