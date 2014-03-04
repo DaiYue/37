@@ -17,8 +17,8 @@ app.configure(function() {
   app.use(express.urlencoded());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ 
-    secret: "top secret of girls' day 2014",
+  app.use(express.session({
+    secret: config.secret,
     cookie: { maxAge: 1000 * 3600 * 24 * 365 }
   }));
   app.use(passport.initialize());
