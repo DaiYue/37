@@ -19,7 +19,7 @@ exports.login = function (user, callback) {
   db.user.findOne({ _id: user.email }, function (err, u) {
     if (err) return callback(err);
     if (!u) return callback(new Error('unauthorized'));
-    delete u.gender;
+    delete user.gender;
     db.user.update(
       { _id: user.email },
       { $set: user },
