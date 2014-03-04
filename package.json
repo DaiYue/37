@@ -6,12 +6,14 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express.io": "*",
+    "connect-mongo": "*",
+    "connect-multiparty": "*",
     "ejs": "*",
-    "passport": "*",
-    "passport-google-oauth": "*",
+    "express.io": "*",
     "mongodb": "*",
     "mongojs": "*",
-    "connect-mongo": "*"
+    "node-uuid": "*",
+    "passport": "*",
+    "passport-google-oauth": "*"
   }
 }

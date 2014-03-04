@@ -6,6 +6,8 @@ var user = require('./models/user.js');
 var post = require('./models/post.js');
 var config = require('./config.json');
 var MongoStore = require('connect-mongo')(express);
+var multipart = require('connect-multiparty');
+var uuid = require('node-uuid');
 
 app = express().http().io();
 
@@ -16,6 +18,7 @@ app.configure(function() {
   app.use(express.favicon());
   app.use(express.json());
   app.use(express.urlencoded());
+  app.use(multipart());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(express.session({
@@ -29,6 +32,7 @@ app.configure(function() {
   app.use(passport.session());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 });
 
 app.get('/auth', 
@@ -89,10 +93,23 @@ app.get('/', function (req, res) {
 
 app.get('/invitation', function (req, res) {
   if (!req.session.user) return res.send(403);
-  var filepath = path.join(__dirname, 'invitation/' + req.session.user.email + '.png');
+  var filepath = path.join(__dirname, 'invitation', req.session.user.email + '.png');
   fs.exists(filepath, function (exists) {
     if (!exists) return res.send(403);
     return res.sendfile(filepath);
+  });
+});
+
+app.post('/upload', function (req, res) {
+  if (!req.files.image) return res.send(400);
+  fs.readFile(req.files.image.path, function (err, data) {
+    if (err) return res.send(500);
+    var imageName = uuid.v4() + '.' + req.files.image.type.split('/')[1];
+    var newPath = path.join(__dirname, 'uploads', imageName);
+    fs.writeFile(newPath, data, function (err) {
+      if (err) return res.send(500);
+      res.send({ url: path.join('/uploads', imageName) });
+    });
   });
 });
 
