@@ -101,14 +101,14 @@ app.get('/invitation', function (req, res) {
 });
 
 app.post('/upload', function (req, res) {
-  if (!req.files.image) return res.send(400);
-  fs.readFile(req.files.image.path, function (err, data) {
+  if (!req.files.upload) return res.send(400);
+  fs.readFile(req.files.upload.path, function (err, data) {
     if (err) return res.send(500);
-    var imageName = uuid.v4() + '.' + req.files.image.type.split('/')[1];
-    var newPath = path.join(__dirname, 'uploads', imageName);
-    fs.writeFile(newPath, data, function (err) {
+    var filename = uuid.v4() + '.' + req.files.upload.type.split('/')[1];
+    var filepath = path.join(__dirname, 'uploads', filename);
+    fs.writeFile(filepath, data, function (err) {
       if (err) return res.send(500);
-      res.send({ url: path.join('/uploads', imageName) });
+      res.send({ url: path.join('/uploads', filename) });
     });
   });
 });
