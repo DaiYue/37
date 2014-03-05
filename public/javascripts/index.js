@@ -184,13 +184,27 @@
     $('#picture-upload').fileupload({
       url: '/upload',
       dataType: 'json',
+      autoUpload: false,
       acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+      disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
+      imageMaxWidth: 1920,
+      imageMaxHeight: 1080,
+      disableImageMetaDataSave: true,
+      imageOrientation: true,
       maxFileSize: 5242880 // 5 MB
     })
     .prop('disabled', !$.support.fileInput)
     .on('fileuploadadd', function (e, data) {
       changePictureUploadState('uploading', data);
       setPictureUploadProgress(0);
+    })
+    .on('fileuploadprocessalways', function (e, data) {
+      if (data.files.error) {
+        showNotification({ type: 'error', title: '图片上传失败', content: '无法读取所选文件。' });
+        changePictureUploadState('idle', data);
+        return;
+      }
+      data.submit();
     })
     .on('fileuploaddone', function (e, data) {
       changePictureUploadState('uploaded', data);

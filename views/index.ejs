@@ -16,7 +16,12 @@
     <script src="/javascripts/imagesloaded.pkgd.min.js"></script>
     <script src="/javascripts/socket.io.min.js"></script>
     <script src="/javascripts/jquery.ui.widget.min.js"></script>
+    <script src="/javascripts/load-image.min.js"></script>
+    <script src="/javascripts/canvas-to-blob.min.js"></script>
+    <script src="/javascripts/jquery.iframe-transport.min.js"></script>
     <script src="/javascripts/jquery.fileupload.min.js"></script>
+    <script src="/javascripts/jquery.fileupload-process.min.js"></script>
+    <script src="/javascripts/jquery.fileupload-image.min.js"></script>
     <script src="/javascripts/index.js"></script>
   </head>
   <body class="<%= {'male': 'male', 'female': 'female'}[user && user.gender] || 'default' %>" data-user-email="<%= user ? user.email : '' %>">
