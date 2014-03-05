@@ -104,11 +104,11 @@ app.post('/upload', function (req, res) {
   if (!req.files.upload) return res.send(400);
   fs.readFile(req.files.upload.path, function (err, data) {
     if (err) return res.send(500);
-    var filename = uuid.v4() + '.' + req.files.upload.type.split('/')[1];
+    var filename = uuid.v4() + '.' + path.extname(req.files.upload.name);
     var filepath = path.join(__dirname, 'uploads', filename);
     fs.writeFile(filepath, data, function (err) {
       if (err) return res.send(500);
-      res.send({ url: path.join('/uploads', filename), type: req.files.upload.type });
+      res.send({ url: path.join('/uploads', filename) });
     });
   });
 });
