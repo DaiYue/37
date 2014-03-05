@@ -108,7 +108,7 @@ app.post('/upload', function (req, res) {
     var filepath = path.join(__dirname, 'uploads', filename);
     fs.writeFile(filepath, data, function (err) {
       if (err) return res.send(500);
-      res.send({ url: path.join('/uploads', filename) });
+      res.send({ url: path.join('/uploads', filename), type: req.files.upload.type });
     });
   });
 });
