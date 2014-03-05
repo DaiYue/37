@@ -58,7 +58,7 @@
       postPanel.prepend(item).masonry('prepended', item);
     }
     if (post.type == 'picture') {
-      var wrapper = item.find('.picture-wrapper')
+      var wrapper = item.find('.picture-wrapper');
       var picture = wrapper.find('img');
       picture.attr('src', picture.data('src'));
       wrapper.imagesLoaded(function () {
