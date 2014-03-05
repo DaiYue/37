@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
     <link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/stylesheets/jquery.fileupload.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="/javascripts/jquery-1.11.0.min.js"></script>
     <script src="/javascripts/bootstrap.min.js"></script>
@@ -14,6 +15,8 @@
     <script src="/javascripts/mustache.min.js"></script>
     <script src="/javascripts/imagesloaded.pkgd.min.js"></script>
     <script src="/javascripts/socket.io.min.js"></script>
+    <script src="/javascripts/jquery.ui.widget.min.js"></script>
+    <script src="/javascripts/jquery.fileupload.min.js"></script>
     <script src="/javascripts/index.js"></script>
   </head>
   <body class="<%= {'male': 'male', 'female': 'female'}[user && user.gender] || 'default' %>" data-user-email="<%= user ? user.email : '' %>">
@@ -28,11 +31,11 @@
           <div id="notification-panel">
             <div class="alert alert-danger" data-template-type="error">
               {{# title }}<strong>{{ title }}</strong>{{/ title }}
-              <p>{{ content }}</p>
+              {{ content }}
             </div>
             <div class="alert alert-success" data-template-type="success">
               {{# title }}<strong>{{ title }}</strong>{{/ title }}
-              <p>{{ content }}</p>
+              {{ content }}
             </div>
           </div>
         </div>
@@ -53,6 +56,7 @@
 <%     if (user.gender == 'female') { %>
               <li><a href="#new-wish" data-toggle="tab"><span class="glyphicon glyphicon-heart"></span> 心愿</a></li>
 <%     } %>
+              <li><a href="#new-picture" data-toggle="tab"><span class="glyphicon glyphicon-picture"></span> 图片</a></li>
             </ul>
             <div class="tab-content">
               <div id="new-message" class="tab-pane active">
@@ -82,6 +86,32 @@
                 </div>
               </div>
 <%     } %>
+              <div id="new-picture" class="tab-pane">
+                <div class="no-file-input hidden well">
+                  <p>你的浏览器不支持文件上传功能，不能分享图片。:(</p>
+                </div>
+                <div class="form-group">
+                  <span class="btn btn-primary fileinput-button upload-button">
+                    <i class="glyphicon glyphicon-plus"></i> 选择图片
+                    <input id="picture-upload" type="file" name="image">
+                  </span>
+                  <button class="btn btn-danger cancel-button hidden"><span class="glyphicon glyphicon-ban-circle"></span> 取消</button>
+                  <div class="upload-result hidden">已上传图片 <span class="file-name"><a href="#" target="_blank"></a></span> <span class="file-size"></span></div>
+                  <button class="btn btn-danger delete-button hidden"><span class="glyphicon glyphicon-remove"></span> 删除</button>
+                </div>
+                <div class="progress progress-striped active hidden">
+                  <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <span class="sr-only"></span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="sr-only" for="picture-description-input">图片描述</label>
+                  <textarea type="text" class="form-control" id="picture-description-input" placeholder="图片描述"></textarea>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-default" id="new-picture-btn"><span class="glyphicon glyphicon-share"></span> 分享</button>
+                </div>
+              </div>
             </div>
           </div>
 <%   } else { %>
@@ -136,6 +166,30 @@
                 </header>
                 <div class="content">
                   <pre>{{ content }}</pre>
+                </div>
+              </div>
+            </div>
+            <div class="post-item col-xs-12 col-sm-6" data-template-type="picture">
+              <div class="post-item-inner {{ user.gender }}">
+                <header class="clearfix">
+                  <div class="avatar pull-left">
+                    <img class="img-circle" data-src="{{ user.picture }}" alt="{{ user.name }}">
+                  </div>
+                  <div class="post-info">
+                    <div>
+                      <strong>{{ user.name }}</strong>
+                    </div>
+                    <div class="text-muted">
+                      <time>{{ time }}</time>
+                    </div>
+                  </div>
+                </header>
+                <div class="content">
+                  <div class="picture-wrapper">
+                    <span class="glyphicon glyphicon-refresh icon-spin loading"></span>
+                    <a href="{{ url }}" target="_blank"><img class="hidden" data-src="{{ url }}" alt=""></a>
+                  </div>
+                  <pre>{{ description }}</pre>
                 </div>
               </div>
             </div>

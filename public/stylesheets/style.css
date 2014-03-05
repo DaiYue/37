@@ -28,11 +28,17 @@ body {
   padding: 5px;
 }
 
+#notification-panel {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
 #user-info-panel a.btn {
   color: #333333;
 }
 
 body.default {
+  background-color: rgb(143, 0, 19);
   background-image: url('../images/bg-default.png');
 }
 
@@ -63,6 +69,7 @@ body.default #new-post-panel .checkbox label {
 }
 
 body.female {
+  background-color: rgb(220, 99, 136);
   background-image: url('../images/bg-female.png');
 }
 
@@ -89,6 +96,7 @@ body.female #new-post-panel .checkbox label {
 }
 
 body.male {
+  background-color: rgb(14, 62, 79);
   background-image: url('../images/bg-male.png');
 }
 
@@ -146,6 +154,15 @@ body.male #new-post-panel .checkbox label {
 
 #new-post-panel .form-group {
   margin-bottom: 6px;
+}
+
+#new-picture .upload-result {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#new-picture .progress {
+  margin-bottom: 5px;
 }
 
 #post-panel, #post-loading-panel {
@@ -272,6 +289,15 @@ body.default #footer .copyright, body.male #footer .copyright {
   white-space: -pre-wrap; /* Opera 4-6 */
   white-space: -o-pre-wrap; /* Opera 7 */
   word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+.post-item-inner .content .picture-wrapper {
+  text-align: center;
+}
+
+.post-item-inner .content .picture-wrapper img {
+  display: block;
+  max-width: 100%;
 }
 
 .invitation-item .content {

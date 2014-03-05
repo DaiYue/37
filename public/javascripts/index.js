@@ -18,6 +18,15 @@
       (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
   }
 
+  function formatFileSize (bytes) {
+    var units = ['B', 'kB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) {
+      return '0 B';
+    }
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + units[i];
+  }
+
   function loadTemplate (element, name) {
     if (!(element instanceof jQuery)) {
       element = $(element);
@@ -33,8 +42,12 @@
   }
 
   function renderPost (post, method) {
+    var template = postTemplates[post.type];
+    if (!template) {
+      return;
+    }
     post.time = formatDateTime(post.timestamp);
-    var item = Mustache.render(postTemplates[post.type], post);
+    var item = Mustache.render(template, post);
     item = $(item);
     item.data('post-id', post._id);
     var avatar = item.find('.avatar img');
@@ -43,6 +56,17 @@
       postPanel.append(item).masonry('appended', item);
     } else if (method == 'prepend') {
       postPanel.prepend(item).masonry('prepended', item);
+    }
+    if (post.type == 'picture') {
+      var wrapper = item.find('.picture-wrapper')
+      var picture = wrapper.find('img');
+      picture.attr('src', picture.data('src'));
+      wrapper.imagesLoaded(function () {
+        // hide picture until loaded to prevent post overlap
+        picture.removeClass('hidden');
+        wrapper.find('.loading').addClass('hidden');
+        postPanel.masonry('layout');
+      });
     }
   }
 
@@ -79,12 +103,49 @@
     postTemplates = {
       message: loadTemplate(postPanel, 'message'),
       wish: loadTemplate(postPanel, 'wish'),
+      picture: loadTemplate(postPanel, 'picture'),
       invitation: loadTemplate(postPanel, 'invitation')
     };
     postPanel.masonry({
       itemSelector: '.post-item',
       columnWidth: '.post-item-sizer'
     });
+  }
+
+  function changePictureUploadState (state, data) {
+    var panel = $('#new-picture');
+    if (state == 'idle') {
+      panel.find('.progress, .cancel-button, .delete-button, .upload-result').addClass('hidden');
+      panel.find('.upload-button').removeClass('hidden');
+      panel.data('file-uploaded', null);
+    } else if (state == 'uploading') {
+      panel.find('.upload-button, .delete-button, .upload-result').addClass('hidden');
+      panel.find('.progress').removeClass('hidden');
+      panel.find('.cancel-button').removeClass('hidden')
+        .on('click', function () {
+          $(this).off('click');
+          data.abort();
+        });
+    } else if (state == 'uploaded') {
+      panel.find('.progress, .upload-button, .cancel-button').addClass('hidden');
+      panel.find('.delete-button').removeClass('hidden')
+        .on('click', function () {
+          $(this).off('click');
+          changePictureUploadState('idle', data);
+        });
+      panel.find('.upload-result').removeClass('hidden');
+      panel.find('.upload-result .file-name a').text(data.files[0].name)
+        .attr('href', data.result.url);
+      panel.find('.upload-result .file-size').text(
+        '(' + formatFileSize(data.files[0].size) + ')');
+      panel.data('file-uploaded', data);
+    }
+  }
+
+  function setPictureUploadProgress (progress) {
+    var bar = $('#new-picture .progress-bar');
+    bar.css('width', progress + '%').attr('aria-valuenow', progress);
+    bar.find('.sr-only').text(progress + '%');
   }
 
   function initializeNewPostPanel () {
@@ -104,6 +165,45 @@
         socket.emit('post', { type: 'wish', content: text, secret: secret });
         box.val('');
       }
+    });
+    $('#new-picture-btn').click(function (event) {
+      var box = $('#picture-description-input');
+      var text = $.trim(box.val());
+      var data = $('#new-picture').data('file-uploaded');
+      if (!text || !data || !data.result) {
+        return;
+      }
+      socket.emit('post', { type: 'picture', description: text, url: data.result.url });
+      box.val('');
+      changePictureUploadState('idle', data);
+    });
+    if (!$.support.fileInput) {
+      $('#new-picture .form-group').css('display', 'none');
+      $('#new-picture .no-file-input').removeClass('hidden');
+    }
+    $('#picture-upload').fileupload({
+      url: '/upload',
+      dataType: 'json',
+      acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+      maxFileSize: 5242880 // 5 MB
+    })
+    .prop('disabled', !$.support.fileInput)
+    .on('fileuploadadd', function (e, data) {
+      changePictureUploadState('uploading', data);
+      setPictureUploadProgress(0);
+    })
+    .on('fileuploaddone', function (e, data) {
+      changePictureUploadState('uploaded', data);
+    })
+    .on('fileuploadfail', function (e, data) {
+      if (data.textStatus != 'abort') {
+        showNotification({ type: 'error', title: '图片上传失败', content: '未知错误。' });
+      }
+      changePictureUploadState('idle', data);
+    })
+    .on('fileuploadprogressall', function (e, data) {
+      var progress = parseInt(data.loaded / data.total * 100, 10);
+      setPictureUploadProgress(progress);
     });
   }
 
