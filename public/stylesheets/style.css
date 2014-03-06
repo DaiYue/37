@@ -122,6 +122,12 @@ body.male #new-post-panel .checkbox label {
   color: rgba(255, 255, 255, 0.8);
 }
 
+body.male #new-post-panel .upload-result,
+body.male #new-post-panel .no-file-input {
+  color: rgba(255, 255, 255);
+  color: rgba(255, 255, 255, 0.8);
+}
+
 #new-post-panel ul.nav-tabs {
   border: none;
   margin-bottom: 5px;
@@ -156,12 +162,12 @@ body.male #new-post-panel .checkbox label {
   margin-bottom: 6px;
 }
 
-#new-picture .upload-result {
+#new-message .upload-result {
   display: inline-block;
   margin-right: 10px;
 }
 
-#new-picture .progress {
+#new-message .progress {
   margin-bottom: 5px;
 }
 
@@ -296,6 +302,15 @@ body.default #footer .copyright, body.male #footer .copyright {
 }
 
 .post-item-inner .content .picture-wrapper img {
+  display: block;
+  max-width: 100%;
+}
+
+.post-item-inner .content .video-wrapper {
+  text-align: center;
+}
+
+.post-item-inner .content .video-wrapper video {
   display: block;
   max-width: 100%;
 }

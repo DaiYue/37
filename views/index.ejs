@@ -21,6 +21,7 @@
     <script src="/javascripts/jquery.iframe-transport.min.js"></script>
     <script src="/javascripts/jquery.fileupload.min.js"></script>
     <script src="/javascripts/jquery.fileupload-process.min.js"></script>
+    <script src="/javascripts/jquery.fileupload-validate.min.js"></script>
     <script src="/javascripts/jquery.fileupload-image.min.js"></script>
     <script src="/javascripts/index.js"></script>
   </head>
@@ -61,16 +62,32 @@
 <%     if (user.gender == 'female') { %>
               <li><a href="#new-wish" data-toggle="tab"><span class="glyphicon glyphicon-heart"></span> 心愿</a></li>
 <%     } %>
-              <li><a href="#new-picture" data-toggle="tab"><span class="glyphicon glyphicon-picture"></span> 图片</a></li>
             </ul>
             <div class="tab-content">
               <div id="new-message" class="tab-pane active">
                 <div class="form-group">
                   <label class="sr-only" for="message-input">写消息</label>
-                  <textarea type="text" class="form-control" id="message-input" placeholder="写消息"></textarea>
+                  <textarea type="text" class="form-control" id="message-input" placeholder="说点什么吧～"></textarea>
+                </div>
+                <div class="no-file-input hidden">
+                  <p>你的浏览器不支持文件上传功能，不能分享图片或视频。:(</p>
+                </div>
+                <div class="form-group upload-form">
+                  <span class="btn btn-primary fileinput-button upload-button">
+                    <i class="glyphicon glyphicon-plus"></i> 插入图片或视频
+                    <input id="media-content-upload" type="file" name="upload" accept="image/*,video/*" capture>
+                  </span>
+                  <button class="btn btn-danger cancel-button hidden"><span class="glyphicon glyphicon-ban-circle"></span> 取消</button>
+                  <div class="upload-result hidden">已上传文件 <span class="file-name"><a href="#" target="_blank"></a></span> <span class="file-size"></span></div>
+                  <button class="btn btn-danger delete-button hidden"><span class="glyphicon glyphicon-remove"></span> 删除</button>
+                </div>
+                <div class="progress progress-striped active hidden">
+                  <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <span class="sr-only"></span>
+                  </div>
                 </div>
                 <div class="form-group">
-                  <button type="submit" class="btn btn-default" id="new-message-btn"><span class="glyphicon glyphicon-envelope"></span> 发送</button>
+                  <button type="submit" class="btn btn-default" id="new-message-btn" disabled><span class="glyphicon glyphicon-envelope"></span> 发送</button>
                 </div>
               </div>
 <%     if (user.gender == 'female') { %>
@@ -87,36 +104,10 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <button type="submit" class="btn btn-default" id="new-wish-btn"><span class="glyphicon glyphicon-send"></span> 许愿</button>
+                  <button type="submit" class="btn btn-default" id="new-wish-btn" disabled><span class="glyphicon glyphicon-send"></span> 许愿</button>
                 </div>
               </div>
 <%     } %>
-              <div id="new-picture" class="tab-pane">
-                <div class="no-file-input hidden well">
-                  <p>你的浏览器不支持文件上传功能，不能分享图片。:(</p>
-                </div>
-                <div class="form-group">
-                  <span class="btn btn-primary fileinput-button upload-button">
-                    <i class="glyphicon glyphicon-plus"></i> 选择图片
-                    <input id="picture-upload" type="file" name="image" accept="image/*" capture="camera">
-                  </span>
-                  <button class="btn btn-danger cancel-button hidden"><span class="glyphicon glyphicon-ban-circle"></span> 取消</button>
-                  <div class="upload-result hidden">已上传图片 <span class="file-name"><a href="#" target="_blank"></a></span> <span class="file-size"></span></div>
-                  <button class="btn btn-danger delete-button hidden"><span class="glyphicon glyphicon-remove"></span> 删除</button>
-                </div>
-                <div class="progress progress-striped active hidden">
-                  <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                    <span class="sr-only"></span>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="sr-only" for="picture-description-input">图片描述</label>
-                  <textarea type="text" class="form-control" id="picture-description-input" placeholder="图片描述"></textarea>
-                </div>
-                <div class="form-group">
-                  <button type="submit" class="btn btn-default" id="new-picture-btn"><span class="glyphicon glyphicon-share"></span> 分享</button>
-                </div>
-              </div>
             </div>
           </div>
 <%   } else { %>
@@ -193,6 +184,33 @@
                   <div class="picture-wrapper">
                     <span class="glyphicon glyphicon-refresh icon-spin loading"></span>
                     <a href="{{ url }}" target="_blank"><img class="hidden" data-src="{{ url }}" alt=""></a>
+                  </div>
+                  <pre>{{ description }}</pre>
+                </div>
+              </div>
+            </div>
+            <div class="post-item col-xs-12 col-sm-6" data-template-type="video">
+              <div class="post-item-inner {{ user.gender }}">
+                <header class="clearfix">
+                  <div class="avatar pull-left">
+                    <img class="img-circle" data-src="{{ user.picture }}" alt="{{ user.name }}">
+                  </div>
+                  <div class="post-info">
+                    <div>
+                      <strong>{{ user.name }}</strong>
+                    </div>
+                    <div class="text-muted">
+                      <time>{{ time }}</time>
+                    </div>
+                  </div>
+                </header>
+                <div class="content">
+                  <div class="video-wrapper">
+                    <span class="glyphicon glyphicon-refresh icon-spin loading"></span>
+                    <video controls="controls" class="hidden" data-src="{{ url }}" data-mime-type="{{ mime }}">
+                      <source></source>
+                      你的浏览器不支持视频播放哦～
+                    </video>
                   </div>
                   <pre>{{ description }}</pre>
                 </div>

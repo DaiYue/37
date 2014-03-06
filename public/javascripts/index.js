@@ -5,6 +5,7 @@
   var notificationTemplates;
   var hasMorePosts = true;
   var isLoadingPosts = false;
+  var uploadState = 'idle';
 
   function formatDateTime (timestamp) {
     var t = new Date(timestamp);
@@ -68,6 +69,18 @@
         postPanel.masonry('layout');
       });
     }
+    else if (post.type == 'video') {
+      var wrapper = item.find('.video-wrapper');
+      var video = wrapper.find('video');
+      var source = video.find('source');
+      source.attr('src', video.data('src'));
+      video.bind('loadedmetadata', function () {
+        // hide video until dimension loaded to prevent post overlap
+        video.removeClass('hidden');
+        wrapper.find('.loading').addClass('hidden');
+        postPanel.masonry('layout');
+      });
+    }
   }
 
   function showInvitation () {
@@ -104,6 +117,7 @@
       message: loadTemplate(postPanel, 'message'),
       wish: loadTemplate(postPanel, 'wish'),
       picture: loadTemplate(postPanel, 'picture'),
+      video: loadTemplate(postPanel, 'video'),
       invitation: loadTemplate(postPanel, 'invitation')
     };
     postPanel.masonry({
@@ -112,8 +126,8 @@
     });
   }
 
-  function changePictureUploadState (state, data) {
-    var panel = $('#new-picture');
+  function changeFileUploadState (state, data) {
+    var panel = $('#new-message');
     if (state == 'idle') {
       panel.find('.progress, .cancel-button, .delete-button, .upload-result').addClass('hidden');
       panel.find('.upload-button').removeClass('hidden');
@@ -131,7 +145,7 @@
       panel.find('.delete-button').removeClass('hidden')
         .on('click', function () {
           $(this).off('click');
-          changePictureUploadState('idle', data);
+          changeFileUploadState('idle', data);
         });
       panel.find('.upload-result').removeClass('hidden');
       panel.find('.upload-result .file-name a').text(data.files[0].name)
@@ -140,21 +154,71 @@
         '(' + formatFileSize(data.files[0].size) + ')');
       panel.data('file-uploaded', data);
     }
+    uploadState = state;
+    updateMessageButtonState();
   }
 
-  function setPictureUploadProgress (progress) {
-    var bar = $('#new-picture .progress-bar');
+  function updateMessageButtonState () {
+    var text = $.trim($('#message-input').val());
+    var data = $('#new-message').data('file-uploaded');
+    var hasText = text.length > 0;
+    var fileUploaded = data && data.result;
+    var button = $('#new-message-btn');
+    if (uploadState == 'uploading') {
+      button.prop('disabled', true);
+    } else if (!hasText && !fileUploaded) {
+      button.prop('disabled', true);
+    } else {
+      button.prop('disabled', false);
+    }
+  }
+
+  function setFileUploadProgress (progress) {
+    var bar = $('#new-message .progress-bar');
     bar.css('width', progress + '%').attr('aria-valuenow', progress);
     bar.find('.sr-only').text(progress + '%');
   }
 
   function initializeNewPostPanel () {
+    $('#message-input').on('input propertychange', function () {
+      updateMessageButtonState();
+    });
     $('#new-message-btn').click(function (event) {
+      if (uploadState == 'uploading') {
+        return;
+      }
       var box = $('#message-input');
       var text = $.trim(box.val());
+      var data = $('#new-message').data('file-uploaded');
+      if (!data || !data.result) {
+        if (text) {
+          socket.emit('post', { type: 'message', content: text });
+        }
+      } else {
+        var mediaType = data.files[0].type;
+        var post = {
+          description: text,
+          url: data.result.url,
+          mime: mediaType
+        };
+        if (/image\//.test(mediaType)) {
+          post.type = 'picture';
+          socket.emit('post', post);
+        } else if (/video\//.test(mediaType)) {
+          post.type = 'video';
+          socket.emit('post', post);
+        }
+      }
       if (text) {
-        socket.emit('post', { type: 'message', content: text });
-        box.val('');
+        box.val('').trigger('propertychange');
+      }
+      changeFileUploadState('idle', data);
+    });
+    $('#wish-input').on('input propertychange', function () {
+      if ($.trim($('#wish-input').val()).length == 0) {
+        $('#new-wish-btn').prop('disabled', true);
+      } else {
+        $('#new-wish-btn').prop('disabled', false);
       }
     });
     $('#new-wish-btn').click(function (event) {
@@ -163,29 +227,18 @@
       var secret = $('#secret-wish-checkbox').is(':checked');
       if (text) {
         socket.emit('post', { type: 'wish', content: text, secret: secret });
-        box.val('');
+        box.val('').trigger('propertychange');
       }
-    });
-    $('#new-picture-btn').click(function (event) {
-      var box = $('#picture-description-input');
-      var text = $.trim(box.val());
-      var data = $('#new-picture').data('file-uploaded');
-      if (!text || !data || !data.result) {
-        return;
-      }
-      socket.emit('post', { type: 'picture', description: text, url: data.result.url });
-      box.val('');
-      changePictureUploadState('idle', data);
     });
     if (!$.support.fileInput) {
-      $('#new-picture .form-group').css('display', 'none');
-      $('#new-picture .no-file-input').removeClass('hidden');
+      $('#new-message .upload-form').css('display', 'none');
+      $('#new-message .no-file-input').removeClass('hidden');
     }
-    $('#picture-upload').fileupload({
+    $('#media-content-upload').fileupload({
       url: '/upload',
       dataType: 'json',
       autoUpload: false,
-      acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+      acceptFileTypes: /(\.|\/)(gif|jpe?g|png|mov|mp4|mpeg|avi)$/i,
       disableImageResize: /Android(?!.*Chrome)|Opera/.test(window.navigator.userAgent),
       imageMaxWidth: 1920,
       imageMaxHeight: 1080,
@@ -195,29 +248,29 @@
     })
     .prop('disabled', !$.support.fileInput)
     .on('fileuploadadd', function (e, data) {
-      changePictureUploadState('uploading', data);
-      setPictureUploadProgress(0);
+      changeFileUploadState('uploading', data);
+      setFileUploadProgress(0);
     })
     .on('fileuploadprocessalways', function (e, data) {
       if (data.files.error) {
-        showNotification({ type: 'error', title: '图片上传失败', content: '无法读取所选文件。' });
-        changePictureUploadState('idle', data);
+        showNotification({ type: 'error', title: '上传失败', content: '无法读取所选文件。' });
+        changeFileUploadState('idle', data);
         return;
       }
       data.submit();
     })
     .on('fileuploaddone', function (e, data) {
-      changePictureUploadState('uploaded', data);
+      changeFileUploadState('uploaded', data);
     })
     .on('fileuploadfail', function (e, data) {
       if (data.textStatus != 'abort') {
-        showNotification({ type: 'error', title: '图片上传失败', content: '未知错误。' });
+        showNotification({ type: 'error', title: '上传失败', content: '未知错误。' });
       }
-      changePictureUploadState('idle', data);
+      changeFileUploadState('idle', data);
     })
     .on('fileuploadprogressall', function (e, data) {
       var progress = parseInt(data.loaded / data.total * 100, 10);
-      setPictureUploadProgress(progress);
+      setFileUploadProgress(progress);
     });
   }
 
