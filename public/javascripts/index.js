@@ -75,9 +75,6 @@
       var source = video.find('source');
       source.attr('src', video.data('src'));
       video.bind('loadedmetadata', function () {
-        // hide video until dimension loaded to prevent post overlap
-        video.removeClass('hidden');
-        wrapper.find('.loading').addClass('hidden');
         postPanel.masonry('layout');
       });
     }
