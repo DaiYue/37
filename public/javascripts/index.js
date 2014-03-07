@@ -294,7 +294,10 @@
       var email = $(document.body).data('user-email');
       if (data.type == 'wish' && data.user && 
         data.user.gender == 'female' && data.user.email == email) {
-        showInvitation();
+        var deadline = new Date(2014, 3 - 1, 7).getTime();
+        if (data.timestamp < deadline) {
+          showInvitation();
+        }
       }
     });
     socket.on('post:ok', function () {
