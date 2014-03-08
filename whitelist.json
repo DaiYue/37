@@ -1,0 +1,4 @@
+[
+  { "email": "foo@bar.com", "gender": "male" },
+  { "email": "bar@foo.com", "gender": "female" }
+]
